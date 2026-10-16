@@ -149,3 +149,8 @@ More in [`docs/HOW_IT_WORKS.md`](docs/HOW_IT_WORKS.md) and [`docs/REQUIREMENTS.m
 - **Osama Abu Al-Halaweh**: [LinkedIn](https://www.linkedin.com/in/osama-abu-al-halaweh-30670b30a/)
 
 Supervised by **Dr. Ezdehar Jawabreh**, Palestine Polytechnic University.
+
+
+## License
+
+© 2026 Haitham Abu Khaled, Mostafa Natsheh, Osama Abu Al-Halaweh. All rights reserved. You are welcome to read the code and learn from it. To reuse any part of it, please contact us first.
