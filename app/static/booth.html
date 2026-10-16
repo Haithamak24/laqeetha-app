@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لقيتها · مباشر</title>
+<link rel="icon" href="/static/icons/favicon.png">
+<style>
+@font-face{font-family:"Plex";font-weight:400;src:url(/static/fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Plex";font-weight:500;src:url(/static/fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Plex";font-weight:400;src:url(/static/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+FB50-FDFF,U+FE70-FEFC}
+@font-face{font-family:"Plex";font-weight:500;src:url(/static/fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+FB50-FDFF,U+FE70-FEFC}
+/* Booth screen: Deep Navy background per the brand sheet ("booth screen & video bg") */
+:root{--deep:#0B1A30;--navy:#13294B;--panel:#122440;--line:#22385A;--text:#F7F8FA;--soft:#AEB9C9;--muted:#7E8CA3;
+  --amber:#F4A12A;--green:#2BC487;--u:min(1vw,1.78vh)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--deep);color:var(--text);font-family:"Plex",system-ui,sans-serif;overflow:hidden}
+.screen{height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:calc(var(--u)*2.2) calc(var(--u)*3)}
+
+/* top */
+.top{display:flex;align-items:center;gap:calc(var(--u)*1.6)}
+.top .mark{height:calc(var(--u)*5.2);width:auto}
+.top .desc{color:var(--soft);font-size:calc(var(--u)*1.5);border-inline-start:1px solid var(--line);padding-inline-start:calc(var(--u)*1.6);line-height:1.3}
+.top .desc b{display:block;color:var(--text);font-weight:500;font-size:calc(var(--u)*1.8)}
+.top .sp{flex:1}
+.live{display:flex;align-items:center;gap:calc(var(--u)*.8);font-size:calc(var(--u)*1.5);color:var(--soft)}
+.live i{width:calc(var(--u)*1);height:calc(var(--u)*1);border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(43,196,135,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 calc(var(--u)*1.2) rgba(43,196,135,0)}100%{box-shadow:0 0 0 0 rgba(43,196,135,0)}}
+.clock{font-size:calc(var(--u)*1.8);color:var(--text);direction:ltr;font-variant-numeric:tabular-nums}
+
+/* body */
+.body{display:grid;grid-template-columns:38fr 62fr;gap:calc(var(--u)*3);min-height:0;padding:calc(var(--u)*2.2) 0 calc(var(--u)*1.4)}
+.side{display:flex;flex-direction:column;gap:calc(var(--u)*1.6);min-height:0;overflow:hidden}
+.claim{font-size:calc(var(--u)*3.2);line-height:1.2;font-weight:500;margin:0;text-wrap:balance}
+.claim small{display:block;font-size:calc(var(--u)*1.5);color:var(--soft);font-weight:400;margin-top:calc(var(--u)*.8);line-height:1.4}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*1.2)}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*1.4) calc(var(--u)*1.6)}
+.stat b{display:block;font-size:calc(var(--u)*4.8);line-height:1;font-weight:500;font-variant-numeric:tabular-nums;transition:color .4s}
+.stat span{display:block;font-size:calc(var(--u)*1.35);color:var(--soft);margin-top:calc(var(--u)*.4);line-height:1.3}
+.stat span em{display:block;font-style:normal;color:var(--muted);font-size:.85em}
+.stat.ids{background:var(--text);color:var(--deep);border-color:var(--text)}
+.stat.ids span{color:#41506A}.stat.ids span em{color:#5B6678}
+.stat.back b{color:var(--green)}
+.stat.bump b{animation:bump .6s}
+@keyframes bump{30%{transform:scale(1.18)}}
+.try{margin-top:auto;display:flex;gap:calc(var(--u)*1.4);align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*1.2)}
+.try img{width:calc(var(--u)*7.5);height:calc(var(--u)*7.5);border-radius:calc(var(--u)*.6);background:#fff;padding:calc(var(--u)*.4);object-fit:contain}
+.try b{display:block;font-weight:500;font-size:calc(var(--u)*1.8)}
+.try span{color:var(--soft);font-size:calc(var(--u)*1.4);line-height:1.4;display:block}
+
+/* feed */
+.feedwrap{display:flex;flex-direction:column;min-height:0}
+.feedhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:calc(var(--u)*1.2)}
+.feedhead h2{margin:0;font-weight:500;font-size:calc(var(--u)*2.2)}
+.feedhead span{color:var(--muted);font-size:calc(var(--u)*1.4)}
+.feedbox{position:relative;flex:1;min-height:0;display:flex}
+.feed{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:calc(var(--u)*1);padding-inline-end:calc(var(--u)*.6);
+  scrollbar-width:thin;scrollbar-color:#2A4166 transparent}
+.feed::-webkit-scrollbar{width:8px}.feed::-webkit-scrollbar-thumb{background:#2A4166;border-radius:4px}.feed::-webkit-scrollbar-track{background:transparent}
+.feed.more{mask-image:linear-gradient(#000 85%,transparent);-webkit-mask-image:linear-gradient(#000 85%,transparent)}
+.newpill{position:absolute;top:calc(var(--u)*.6);left:50%;transform:translate(-50%,-10px);opacity:0;pointer-events:none;background:var(--green);color:var(--deep);border:0;border-radius:999px;padding:calc(var(--u)*.5) calc(var(--u)*1.4);font:inherit;font-weight:500;font-size:calc(var(--u)*1.4);cursor:pointer;transition:opacity .25s,transform .25s;z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.newpill.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.ev{display:flex;gap:calc(var(--u)*1.4);align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*1.2) calc(var(--u)*1.5);flex:none}
+.ev.new{animation:lockin .55s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes lockin{from{opacity:0;transform:translateY(calc(var(--u)*-3)) scale(.97)}to{opacity:1;transform:none}}
+.ev .ic{flex:none;width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);border-radius:calc(var(--u)*1);display:grid;place-items:center;background:#1C3358;color:var(--text)}
+.ev .ic svg{width:55%;height:55%}
+.ev.k-analyzed .ic{background:#1C3358}
+.ev.k-id .ic{background:var(--text);color:var(--deep)}
+.ev.k-searched .ic{background:#1C3358}
+.ev.k-verified .ic,.ev.k-returned .ic{background:var(--green);color:var(--deep)}
+.ev.k-rejected .ic,.ev.k-locked .ic,.ev.k-alert .ic{background:var(--amber);color:var(--deep)}
+.ev.k-verified{border-color:var(--green)}
+.ev .tx{flex:1;min-width:0}
+.ev .t{font-size:calc(var(--u)*1.9);font-weight:500;line-height:1.35}
+.ev .t q{quotes:"«" "»"}
+.ev .en{font-size:calc(var(--u)*1.35);color:var(--muted);line-height:1.4;margin-top:2px;text-align:right}
+.ev .chips{display:flex;flex-wrap:wrap;gap:calc(var(--u)*.6);margin-top:calc(var(--u)*.6)}
+.chip{font-size:calc(var(--u)*1.3);border-radius:999px;padding:2px calc(var(--u)*1);background:#1C3358;color:var(--soft)}
+.chip.g{background:rgba(43,196,135,.16);color:var(--green)}
+.chip.a{background:rgba(244,161,42,.16);color:var(--amber)}
+.ev .when{flex:none;color:var(--muted);font-size:calc(var(--u)*1.3)}
+.empty{border:1px dashed var(--line);border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*3);text-align:center;color:var(--soft);font-size:calc(var(--u)*1.9)}
+.empty small{display:block;color:var(--muted);font-size:.7em;margin-top:6px}
+
+.foot{display:flex;white-space:nowrap;justify-content:space-between;gap:calc(var(--u)*2);color:var(--muted);font-size:calc(var(--u)*1.4);border-top:1px solid var(--line);padding-top:calc(var(--u)*1.2)}
+.foot .cta{color:var(--soft)}.foot .cta b{color:var(--amber);font-weight:500}
+
+/* overlays: the two moments worth stopping for */
+.ov{position:fixed;inset:0;background:rgba(11,26,48,.94);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .35s;z-index:5}
+.ov.on{opacity:1}
+.ov .box{text-align:center}
+.ov h3{font-size:calc(var(--u)*5.2);font-weight:500;margin:calc(var(--u)*2.4) 0 calc(var(--u)*.6)}
+.ov p{font-size:calc(var(--u)*2.2);color:var(--soft);margin:0}
+.ov p.en{font-size:calc(var(--u)*1.7);color:var(--muted);margin-top:calc(var(--u)*.6)}
+.bigmark{width:calc(var(--u)*34);height:auto;overflow:visible}
+.bigmark .dot{transform-box:fill-box;transform-origin:center}
+.ov.on .bigmark .dot{animation:snap 1.1s .35s cubic-bezier(.3,1.4,.4,1) forwards}
+@keyframes snap{
+  0%{transform:translate(0,0) rotate(18deg);fill:#F4A12A}
+  55%{fill:#F4A12A}
+  100%{transform:translate(-8px,18px) rotate(0deg);fill:#2BC487}}
+.idcard{width:calc(var(--u)*40);margin:0 auto;background:var(--amber);border-radius:calc(var(--u)*1.4);padding:calc(var(--u)*1.4);position:relative}
+.idcard .in{background:#FDFDF9;border-radius:calc(var(--u)*.8);padding:calc(var(--u)*1.6);display:grid;grid-template-columns:1fr 28%;gap:calc(var(--u)*1.6);color:#5B6678;font-size:calc(var(--u)*1.6);text-align:start}
+.idcard .rows{display:flex;flex-direction:column;gap:calc(var(--u)*1)}
+.idcard .rows div{display:flex;gap:calc(var(--u)*.8);align-items:center}
+.idcard .bar{height:calc(var(--u)*2.4);flex:1;max-width:70%;background:var(--deep);border-radius:4px;transform:scaleX(0);transform-origin:right}
+.idcard .photo{background:var(--deep);border-radius:6px;aspect-ratio:.8;transform:scaleY(0);transform-origin:top}
+.ov.on .idcard .bar{animation:grow .4s forwards}
+.ov.on .idcard .rows div:nth-child(2) .bar{animation-delay:.15s}
+.ov.on .idcard .rows div:nth-child(3) .bar{animation-delay:.3s}
+.ov.on .idcard .photo{animation:growY .4s .45s forwards}
+@keyframes grow{to{transform:scaleX(1)}}
+@keyframes growY{to{transform:scaleY(1)}}
+.idcard .stamp{position:absolute;inset-inline-end:calc(var(--u)*-1.4);bottom:calc(var(--u)*-1.6);background:var(--navy);color:#fff;border:2px solid var(--green);border-radius:999px;padding:calc(var(--u)*.7) calc(var(--u)*1.6);font-size:calc(var(--u)*1.9);display:flex;gap:calc(var(--u)*.6);align-items:center;opacity:0}
+.idcard .stamp svg{width:calc(var(--u)*2);height:calc(var(--u)*2);color:var(--green)}
+.ov.on .idcard .stamp{animation:stamp .35s .9s both}
+@keyframes stamp{from{opacity:0;transform:scale(1.4) rotate(-8deg)}to{opacity:1;transform:none}}
+/* attract loop: Mostafa's explainer plays when the booth is idle; any real event cuts back to live */
+.attract{position:fixed;inset:0;background:var(--deep);z-index:4;opacity:0;pointer-events:none;transition:opacity .6s}
+.attract.on{opacity:1;pointer-events:auto;cursor:none}
+.attract video{width:100%;height:100%;object-fit:contain;display:block}
+.vidhint{position:fixed;left:calc(var(--u)*2.4);bottom:calc(var(--u)*5.6);z-index:3;background:var(--panel);border:1px solid var(--line);color:var(--soft);border-radius:999px;padding:calc(var(--u)*.6) calc(var(--u)*1.4);font-size:calc(var(--u)*1.3);display:none}
+.vidhint.on{display:block}
+.sndtip{position:fixed;left:50%;bottom:calc(var(--u)*5.6);transform:translateX(-50%);z-index:6;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:calc(var(--u)*.7) calc(var(--u)*1.6);font-size:calc(var(--u)*1.5);opacity:0;transition:opacity .25s;pointer-events:none}
+.sndtip.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="top">
+    <img class="mark" src="/static/brand/mark-light.svg" alt="لقيتها · Laqeetha">
+    <div class="desc"><b>Campus Lost &amp; Found</b>مفقودات الجامعة، بالذكاء الاصطناعي</div>
+    <div class="sp"></div>
+    <div class="live"><i></i>مباشر · LIVE</div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <main class="body">
+    <aside class="side">
+      <h1 class="claim">الأغراض بترجع لأصحابها، والهويات ما بتنعرض أبداً.<small dir="ltr" style="text-align:right">Items go back to their owners. ID cards are never shown.</small></h1>
+      <div class="stats">
+        <div class="stat" id="st-found"><b>0</b><span>أغراض سجّلها الأمن<em>items logged</em></span></div>
+        <div class="stat back" id="st-back"><b>0</b><span>لقت صاحبها<em>owner found</em></span></div>
+        <div class="stat ids" id="st-ids"><b>0</b><span>هويات محمية من النشر<em>IDs kept private</em></span></div>
+        <div class="stat" id="st-search"><b>0</b><span>عمليات بحث<em>searches</em></span></div>
+      </div>
+    </aside>
+
+    <section class="feedwrap">
+      <div class="feedhead"><h2>شو بصير هلّق</h2><span>What's happening now</span></div>
+      <div class="feedbox"><button class="newpill" id="newPill">↑ جديد · <bdi dir="ltr">new</bdi></button>
+      <div class="feed" id="feed"><div class="empty">بانتظار أول غرض…<small dir="ltr">Waiting for the first item…</small></div></div></div>
+    </section>
+  </main>
+
+  <footer class="foot"><span class="cta"><b>جرّبها بنفسك:</b> اوصف شي ضيّعته على جوالنا، وشوف شو بصير هون</span><span>بدون إنترنت · <span dir="ltr">Runs offline</span></span></footer>
+</div>
+
+<div class="sndtip" id="sndTip"></div>
+<div class="vidhint" id="vidHint">اضغط مرة على الشاشة عشان يشتغل الفيديو · <bdi dir="ltr">click once to allow the video loop</bdi></div>
+<div class="attract" id="attract"><video id="vid" muted playsinline preload="auto">
+  <source src="/static/media/laqeetha-explainer.mp4" type="video/mp4">
+  <source src="/static/media/laqeetha-explainer.webm" type="video/webm">
+</video></div>
+
+<div class="ov" id="ovFound"><div class="box">
+  <svg class="bigmark" viewBox="150 12 240 130" aria-hidden="true">
+    <path d="M380,22 L380,100 M380,100 L160,100 M160,100 L160,22 M300,100 L300,80 M264,100 L264,80" fill="none" stroke="#F7F8FA" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="330" y="62" width="32" height="38" rx="12" fill="none" stroke="#F7F8FA" stroke-width="14"/>
+    <rect x="198" y="68" width="32" height="64" rx="12" fill="none" stroke="#F7F8FA" stroke-width="14"/>
+    <rect x="328" y="32" width="16" height="16" rx="4" fill="#F7F8FA"/><rect x="349" y="32" width="16" height="16" rx="4" fill="#F7F8FA"/>
+    <rect x="282" y="120" width="16" height="16" rx="4" fill="#F7F8FA"/><rect x="302" y="120" width="16" height="16" rx="4" fill="#F7F8FA"/>
+    <rect x="246" y="50" width="16" height="16" rx="4" fill="#F7F8FA"/>
+    <rect class="dot" x="274" y="32" width="16" height="16" rx="4" fill="#F4A12A"/>
+  </svg>
+  <h3>لقيتها! ولقت صاحبها</h3>
+  <p id="ovFoundTxt"></p>
+  <p class="en" id="ovFoundEn" dir="ltr"></p>
+</div></div>
+
+<div class="ov" id="ovId"><div class="box">
+  <div class="idcard"><div class="in">
+    <div class="rows"><div>الاسم:<span class="bar"></span></div><div>الميلاد:<span class="bar"></span></div><div>الرقم:<span class="bar"></span></div></div>
+    <div class="photo"></div>
+  </div><div class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>مخفية</div></div>
+  <h3>اكتشفنا هوية، ورح تضل مخفية</h3>
+  <p>صورتها ما رح تنعرض لأي حدا. صاحبها بيلاقيها باسمه.</p>
+  <p class="en" dir="ltr">ID card detected. It will never be shown; the owner finds it by name.</p>
+</div></div>
+
+<script>
+const CAT = {"keys":["مفاتيح","keys"],"wallet or purse":["جزدان","wallet"],"phone":["جوال","phone"],"earbuds case":["علبة سماعات","earbuds"],"headphones":["سماعات","headphones"],"laptop":["لابتوب","laptop"],"tablet or tablet case":["جراب آيباد","tablet case"],"charger or cable":["شاحن","charger"],"water bottle":["قنينة مي","water bottle"],"backpack":["شنتة ظهر","backpack"],"handbag":["شنتة يد","handbag"],"glasses":["نظارة","glasses"],"watch":["ساعة","watch"],"bracelet or jewelry":["إسوارة","bracelet"],"student ID card":["بطاقة جامعية","student card"],"national ID card in a plastic holder":["هوية","ID card"],"notebook or book":["دفتر","notebook"],"umbrella":["شمسية","umbrella"],"jacket or hoodie":["جاكيت","jacket"],"scarf":["شال","scarf"],"calculator":["آلة حاسبة","calculator"],"USB flash drive":["فلاشة","flash drive"],"pencil case":["مقلمة","pencil case"],"power bank":["باور بانك","power bank"]};
+const COL = {"black":"أسود","white":"أبيض","gray":"رمادي","silver":"فضي","red":"أحمر","blue":"أزرق","green":"أخضر","yellow":"أصفر","pink":"زهري","purple":"بنفسجي","brown":"بني","orange":"برتقالي","gold":"ذهبي","beige":"بيج","transparent":"شفاف"};
+const LOC = {gate_a:["أمن بوابة A","Gate A security"],gate_b:["أمن بوابة B","Gate B security"],gate_c:["أمن بوابة C","Gate C security"],abu_romman:["مبنى أبو رمّان","the Abu Romman Building"],other:["مكان آخر","another location"]};
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ar = e => `${(CAT[e.category]||[e.category])[0]} · ${COL[e.color]||e.color}`;
+const en = e => `${e.color} ${(CAT[e.category]||[,e.category])[1]}`;
+const loc = l => LOC[l] || [l, l];
+const I = {
+  cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6l1.3-2h3.4L15 6"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+};
+
+// Each event becomes one or two cards: [kindClass, icon, arabic title, english line, chips html]
+function cards(e){
+  const out = [];
+  if (e.kind === "analyzed") {
+    if (e.is_id) out.push(["k-id", I.shield, "الذكاء الاصطناعي اكتشف هوية، ورح تنحفظ مخفية", "AI detected an ID card. It will be stored privately.", `<span class="chip"><bdi dir="ltr">${e.ms} ms</bdi></span>`]);
+    else out.push(["k-analyzed", I.cam, `الذكاء الاصطناعي تعرّف على: ${esc(ar(e))}`, `AI recognised: ${esc(en(e))}`,
+      `<span class="chip g"><bdi dir="ltr">${Math.round(e.conf*100)}%</bdi></span><span class="chip"><bdi dir="ltr">${e.ms} ms</bdi></span>`]);
+  } else if (e.kind === "logged") {
+    const l = loc(e.location);
+    out.push(["k-logged", I.box, e.is_id ? `انسجلت هوية بشكل خاص، ${esc(l[0])}` : `غرض جديد عند الأمن: ${esc(ar(e))}، ${esc(l[0])}`,
+      e.is_id ? `ID logged privately at ${esc(l[1])}` : `Logged: ${esc(en(e))} at ${esc(l[1])}`,
+      (e.corrected ? `<span class="chip g">الأمن صحّح اسم الغرض · <bdi dir="ltr">corrected by security</bdi></span>` : "") + (e.duplicate ? `<span class="chip a">ممكن يكون مكرر</span>` : "")]);
+    if (e.alerts > 0) out.push(["k-alert", I.bell, e.alerts === 1 ? "وصل تنبيه لشخص كان مبلّغ عن غرض بيشبهه" : e.alerts === 2 ? "وصل تنبيه لشخصين كانوا مبلّغين عن غرض بيشبهه" : `وصل تنبيه لـ${e.alerts} أشخاص كانوا مبلّغين عن غرض بيشبهه`,
+      e.alerts === 1 ? "1 person alerted: a matching item just arrived" : `${e.alerts} people alerted: a matching item just arrived`, ""]);
+  } else if (e.kind === "searched") {
+    // The server only sends words that are safe for a public screen; otherwise query is empty.
+    const [title, enLine] = e.id_report ? ["حدا بيدوّر على هوية ضايعة (الاسم مخفي)", "Someone searched for a lost ID (name hidden)"]
+      : e.query ? [`حدا بيدوّر: <q>${esc(e.query)}</q>`, "Someone described what they lost, in their own words"]
+      : e.described === false && e.photo ? ["حدا بيدوّر بصورة قديمة لغرضه", "Someone searched with an old photo of their item"]
+      : ["حدا وصف بكلامه شي ضيّعه", "Someone described what they lost, in their own words"];
+    const n = e.matches, nTxt = n === 1 ? "نتيجة وحدة" : n === 2 ? "نتيجتين" : n <= 10 ? `${n} نتائج` : `${n} نتيجة`;
+    const chips = (e.understood ? `<span class="chip g">فهمنا: <bdi dir="ltr">${esc(e.understood)}</bdi></span>` : "")
+      + `<span class="chip">${n ? nTxt : "لسا ما وصل، حفظنا البلاغ"}</span>`
+      + (n ? `<span class="chip">أقرب تطابق <bdi dir="ltr">${e.top}%</bdi></span>` : "");
+    out.push(["k-searched", I.search, title, enLine, chips]);
+  } else if (e.kind === "verified") {
+    const l = loc(e.location);
+    out.push(["k-verified", I.check, e.is_id ? "لقت الهوية صاحبها: تم التحقق" : `لقى صاحبه: ${esc(ar(e))}`,
+      e.is_id ? "Owner verified: the ID is waiting for them at security" : `Owner verified: the ${esc(en(e))} is waiting for them at security`, `<span class="chip">الاستلام من ${esc(l[0])}</span>`]);
+  } else if (e.kind === "rejected") {
+    out.push(["k-rejected", I.x, `إجابة غلط على ${e.is_id ? "هوية" : esc(ar(e))}: النظام ما سلّم الغرض`, `Wrong answer: the item was not released (${e.left===1?"1 try":`${e.left} tries`} left)`, `<span class="chip a">${e.left===1?"باقي محاولة وحدة":e.left===2?"باقي محاولتين":`باقي ${e.left} محاولات`}</span>`]);
+  } else if (e.kind === "locked") {
+    out.push(["k-locked", I.lock, `انقفل الغرض بعد 3 محاولات غلط (${e.is_id ? "هوية" : esc(ar(e))})، والأمن رح يراجعه`, "Locked after 3 wrong answers. Security will review it.", ""]);
+  } else if (e.kind === "returned") {
+    out.push(["k-returned", I.check, e.is_id ? "تم التسليم: الهوية بإيد صاحبها" : `تم التسليم من الأمن: ${esc(ar(e))}`, "Handed back to its owner by security", ""]);
+  }
+  return out;
+}
+
+const feed = document.getElementById("feed");
+let last = 0, booted = false, seen = 0;
+const ago = ts => { const s = Math.max(0, Date.now()/1000 - ts); return s < 50 ? "الآن" : s < 3600 ? `قبل ${Math.round(s/60)} د` : `قبل ${Math.round(s/3600)} س`; };
+// Scrolling: newest stays on top. If someone scrolled down to read, new cards don't push the page;
+// a "new" pill appears instead, and the feed drifts back to the top after 20 s without touching it.
+let lastScroll = 0;
+function atTop(){ return feed.scrollTop < 8; }
+function updMore(){ feed.classList.toggle("more", feed.scrollHeight - feed.scrollTop - feed.clientHeight > 8); }
+feed.addEventListener("scroll", () => { lastScroll = Date.now(); if (atTop()) document.getElementById("newPill").classList.remove("on"); updMore(); if (typeof lastActivity !== "undefined") lastActivity = Date.now(); }, {passive:true});
+document.getElementById("newPill").onclick = () => feed.scrollTo({top:0, behavior:"smooth"});
+setInterval(() => { if (!atTop() && Date.now() - lastScroll > 20000) feed.scrollTo({top:0, behavior:"smooth"}); }, 2000);
+function render(e, animate){
+  const keep = !atTop(), h0 = feed.scrollHeight;
+  for (const [k, ic, t, enTxt, chips] of cards(e)) {
+    const el = document.createElement("div");
+    el.className = `ev ${k}${animate ? " new" : ""}`; el.dataset.ts = e.ts;
+    el.innerHTML = `<div class="ic">${ic}</div><div class="tx"><div class="t">${t}</div><div class="en" dir="ltr">${enTxt}</div>${chips ? `<div class="chips">${chips}</div>` : ""}</div><div class="when">${ago(e.ts)}</div>`;
+    feed.prepend(el); seen++;
+  }
+  feed.querySelector(".empty")?.remove();
+  while (feed.children.length > 60) feed.lastElementChild.remove();
+  if (keep) { feed.scrollTop += feed.scrollHeight - h0; if (animate) document.getElementById("newPill").classList.add("on"); }
+  updMore();
+}
+
+// Overlays queue so two moments never overlap
+const queue = []; let showing = false;
+function moment(e){
+  if (e.kind === "verified") queue.push(() => { document.getElementById("ovFoundTxt").innerHTML = e.is_id ? "الهوية لقت صاحبها، وما حدا شاف صورتها." : `${esc(ar(e))} · تم التحقق بتفصيل ما بيعرفه غير صاحب الغرض.`;
+    document.getElementById("ovFoundEn").textContent = e.is_id ? "Owner verified. Nobody ever saw this ID's photo." : `Found it. Owner verified: the ${en(e)} goes home after pickup at security.`; return "ovFound"; });
+  if (e.kind === "analyzed" && e.is_id) queue.push(() => "ovId");
+  play();
+}
+function play(){
+  if (showing || !queue.length) return;
+  showing = true; const id = queue.shift()(); const ov = document.getElementById(id);
+  ov.classList.remove("on"); void ov.offsetWidth; ov.classList.add("on");
+  setTimeout(() => { ov.classList.remove("on"); setTimeout(() => { showing = false; play(); }, 400); }, id === "ovFound" ? 4200 : 3600);
+}
+
+function setStat(id, v){ const s = document.getElementById(id), b = s.querySelector("b"); if (b.textContent !== String(v)) { const up = booted; b.textContent = v; if (up) { s.classList.remove("bump"); void s.offsetWidth; s.classList.add("bump"); } } }
+async function tick(){
+  try {
+    const r = await fetch(`/api/events?after=${last}`); const j = await r.json();
+    if (booted && j.events.length) { lastActivity = Date.now(); stopAttract(); }
+    for (const e of j.events) { render(e, booted); if (booted) moment(e); last = Math.max(last, e.id); }
+    const S = j.stats; setStat("st-found", S.found); setStat("st-back", S.returned); setStat("st-ids", S.ids_protected); setStat("st-search", S.searches);
+    booted = true;
+  } catch (err) {}
+  feed.querySelectorAll(".ev").forEach(el => el.querySelector(".when").textContent = ago(+el.dataset.ts));
+}
+setInterval(tick, 1200); tick();
+const clock = () => document.getElementById("clock").textContent = new Date().toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"});
+setInterval(clock, 10000); clock();
+
+// Attract loop. /booth?idle=45 (seconds, default 45) · /booth?idle=0 turns it off · V = play now · S = sound on/off · Esc or click = back to live
+const params = new URLSearchParams(location.search);
+const IDLE = (params.has("idle") ? Number(params.get("idle")) : 45) * 1000;
+const att = document.getElementById("attract"), vid = document.getElementById("vid");
+let lastActivity = Date.now(), attractOn = false;
+const hint = document.getElementById("vidHint"), sndTip = document.getElementById("sndTip");
+// Sound: off by default (it loops every minute in a loud hall). S toggles it; /booth?sound=1 starts with it on.
+let soundOn = params.get("sound") === "1";
+function showSnd(){
+  sndTip.innerHTML = soundOn ? "الصوت شغّال · <bdi dir=\"ltr\">sound on</bdi>" : "الصوت مسكّر · <bdi dir=\"ltr\">sound off</bdi>";
+  sndTip.classList.add("on"); clearTimeout(showSnd.t); showSnd.t = setTimeout(() => sndTip.classList.remove("on"), 1800);
+}
+function startAttract(){
+  if (attractOn || showing || queue.length) return;
+  attractOn = true; vid.currentTime = 0; vid.muted = !soundOn;
+  vid.play().catch(err => {
+    // a browser that won't play sound before a click still plays muted
+    if (!vid.muted && err && err.name === "NotAllowedError") { vid.muted = true; return vid.play(); }
+    throw err;
+  }).then(() => {
+    if (!attractOn) { vid.pause(); return; }          // a live event arrived while it was starting
+    att.classList.add("on"); hint.classList.remove("on");
+  }).catch(err => {
+    // Never give up for good (one failed start used to switch the loop off until a reload).
+    // Try again after the next idle period; if the browser blocks video without a click, say so on screen.
+    attractOn = false; lastActivity = Date.now();
+    if (err && err.name === "NotAllowedError") hint.classList.add("on");
+  });
+}
+function stopAttract(){
+  lastActivity = Date.now();
+  if (!attractOn) return;
+  attractOn = false; att.classList.remove("on"); setTimeout(() => { if (!attractOn) vid.pause(); }, 650);
+}
+// One click or key press anywhere counts as permission to play video in browsers that ask for it.
+function unlock(){
+  if (!hint.classList.contains("on")) return;
+  vid.muted = true;
+  vid.play().then(() => { if (!attractOn) { vid.pause(); vid.currentTime = 0; } hint.classList.remove("on"); }).catch(() => {});
+}
+document.addEventListener("pointerdown", unlock); document.addEventListener("keydown", unlock);
+vid.addEventListener("ended", stopAttract);
+att.addEventListener("click", stopAttract);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") stopAttract();
+  if (e.key.toLowerCase() === "v") { lastActivity = 0; startAttract(); }
+  if (e.key.toLowerCase() === "s") { soundOn = !soundOn; if (attractOn) vid.muted = !soundOn; showSnd(); }
+});
+setInterval(() => { if (IDLE > 0 && Date.now() - lastActivity > IDLE) startAttract(); }, 1000);
+</script>
+</body>
+</html>

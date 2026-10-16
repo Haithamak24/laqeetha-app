@@ -1,0 +1,18 @@
+post,date,item_type,is_identity_document,location,owner_name_public,national_id_number_public,date_of_birth_public,face_photo_public,note
+1,2026-09-29,national ID + driving licence,yes,Gate C security,yes,yes,yes,yes,nothing redacted
+2,2026-09-29,tablet case,no,Gate C square,no,no,no,no,
+3,2026-09-27,watch,no,Gate C security,no,no,no,no,
+4,2026-09-23,bracelet,no,not stated,no,no,no,no,
+5,2026-08-19,student card,yes,Gate B security,yes,no,no,no,number and photo scribbled out
+6,2026-10-08,student card,yes,Gate B security,yes,no,no,yes,number scribbled out
+7,2026-10-07,purse + student card,yes,Gate B security,yes,no,no,no,number and photo scribbled out
+8,2026-10-07,student card,yes,Gate B security,yes,no,no,no,number and photo scribbled out
+9,2026-10-06,national ID,yes,Gate C security,yes,no,yes,no,number and photo scribbled out
+10,2026-09-27,watch,no,Gate B security,no,no,no,no,
+11,2026-09-14,national ID,yes,Gate C security,yes,no,yes,yes,number scribbled out
+12,2026-09-02,national ID,yes,Gate C security,yes,no,yes,no,number and photo scribbled out
+13,2026-08-26,keys,no,Gate C security,no,no,no,no,
+14,2026-08-19,national ID,yes,Gate C security,yes,no,yes,no,number and photo scribbled out
+15,2026-08-19,national ID,yes,Gate C security,yes,no,yes,yes,number scribbled out
+16,2026-08-19,student card,yes,Gate B security,yes,no,no,no,DUPLICATE of post 5 (same card posted 3 minutes earlier)
+17,2026-08-16,national ID,yes,Gate C security,yes,no,yes,no,number and photo scribbled out

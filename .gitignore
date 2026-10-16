@@ -1,0 +1,8 @@
+data/
+private_test_photos/
+.venv/
+__pycache__/
+real_test_results.txt
+prompt_choice.txt
+*.zip
+*.rar

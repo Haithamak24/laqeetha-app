@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لقيتها · Laqeetha</title>
+<meta name="theme-color" content="#F7F8FA">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/static/icons/favicon.png">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="لقيتها">
+<style>
+/* Fonts ship with the app so it looks right with no internet at the venue. Brand: IBM Plex Sans + IBM Plex Sans Arabic, 400/500 only */
+@font-face{font-family:"Plex";font-weight:400;font-display:swap;src:url(/static/fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Plex";font-weight:500;font-display:swap;src:url(/static/fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Plex";font-weight:400;font-display:swap;src:url(/static/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+FB50-FDFF,U+FE70-FEFC}
+@font-face{font-family:"Plex";font-weight:500;font-display:swap;src:url(/static/fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+200C-200E,U+FB50-FDFF,U+FE70-FEFC}
+
+:root{
+  /* Laqeetha brand tokens (Mostafa's identity, 13 Oct 2026) */
+  --navy:#13294B;         /* trust: text, primary buttons, brand base */
+  --ink:#13294B;
+  --deep:#0B1A30;         /* dark surfaces */
+  --tint:#E9EDF4;         /* soft navy tint for selected/neutral states */
+  --paper:#F7F8FA;
+  --card:#FFFFFF;
+  --line:#E1E5EC;
+  --muted:#5B6678;        /* slate */
+  --amber:#F4A12A;        /* the lost item / exposed. Fill only, never text */
+  --amber-tint:#FFF3DF; --amber-text:#7A4A06;
+  --green:#1FA971;        /* the match / returned moment. Use sparingly */
+  --green-bright:#2BC487; /* green on dark */
+  --green-text:#13874F;   /* green text on white */
+  --green-tint:#E3F6EC; --green-tint-text:#0D5A39;
+  --redact:#0B1A30;
+  --danger:#B42318;
+  --r-sheet:24px; --r-card:12px; --r-input:8px;
+  --tabbar:68px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:16px/1.6 "Plex",system-ui,sans-serif;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;background:var(--paper);position:relative}
+@media(min-width:620px){body{background:#E6E9EF}.app{box-shadow:0 0 0 1px var(--line)}}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px)}
+.mark{height:34px;width:auto;flex:none}
+.brand{flex:1;min-width:0;line-height:1.15}
+.brand b{display:block;font-weight:500;font-size:16px;direction:ltr;text-align:start}
+.brand span{font-size:12.5px;color:var(--muted);display:block;border-inline-start:1px solid var(--line);padding-inline-start:10px}
+.iconbtn{border:1px solid var(--line);background:var(--card);border-radius:999px;height:36px;min-width:36px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:13.5px;font-weight:500}
+.iconbtn svg{width:18px;height:18px}
+
+main{flex:1;padding:4px 16px calc(var(--tabbar) + var(--safe-b) + 24px)}
+.screen{display:none}.screen.on{display:block}
+h1{font-size:27px;line-height:1.25;font-weight:500;margin:14px 0 4px;letter-spacing:-.2px}
+.lede{color:var(--muted);margin:0 0 18px;font-size:15px}
+
+/* bottom tabs */
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + var(--safe-b))}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:500}
+.tab .pill{width:52px;height:30px;border-radius:999px;display:grid;place-items:center;transition:background .2s}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--ink);font-weight:500}
+.tab.on .pill{background:var(--tint);color:var(--navy)}
+.tab .lock{font-size:10px;opacity:.7}
+
+/* forms */
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:500;font-size:14.5px;margin-bottom:6px}
+.field .hint{font-size:13px;color:var(--muted);margin-top:6px}
+textarea,input[type=text],input[type=tel]{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-input);padding:13px 14px;font-size:16px;outline:none;transition:border-color .15s}
+textarea{min-height:92px;resize:none;line-height:1.5}
+textarea:focus,input:focus{border-color:var(--navy)}
+.examples{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;margin:8px 0 0;scrollbar-width:none}
+.examples::-webkit-scrollbar{display:none}
+.ex{flex:none;border:1px dashed #AEB6C4;background:transparent;border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.ex:active{background:var(--tint)}
+.btn{width:100%;border:0;border-radius:8px;background:var(--navy);color:#fff;padding:15px;font-size:16.5px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:disabled{opacity:.55}
+.btn.secondary{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{width:auto;padding:9px 14px;font-size:14px;border-radius:8px}
+.toggle{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-input);padding:12px 14px;cursor:pointer;margin-bottom:14px}
+.toggle input{width:20px;height:20px;accent-color:var(--navy);flex:none}
+.toggle div{font-size:14.5px}.toggle small{display:block;color:var(--muted);font-size:12.5px}
+.reveal{display:none}.reveal.on{display:block}
+.photo-btn{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:1.5px dashed #AEB6C4;border-radius:var(--r-input);padding:12px 14px;cursor:pointer;text-align:start;font-size:14.5px}
+.photo-btn img{width:52px;height:52px;object-fit:cover;border-radius:10px}
+.photo-btn svg{width:26px;height:26px;color:var(--navy);flex:none}
+
+/* camera (security) */
+.camera{position:relative;display:grid;place-items:center;width:100%;aspect-ratio:4/3;border-radius:16px;background:var(--deep);color:#fff;border:0;cursor:pointer;overflow:hidden;margin-bottom:14px}
+.camera img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.camera .cta{display:flex;flex-direction:column;align-items:center;gap:10px;font-weight:500}
+.camera .cta svg{width:44px;height:44px}
+.ai{position:absolute;inset-inline:12px;bottom:12px;background:rgba(255,255,255,.95);color:var(--ink);border-radius:14px;padding:10px 12px;display:none;align-items:center;gap:10px;font-size:14.5px;text-align:start}
+.ai.on{display:flex}
+.camera.scanning img{filter:saturate(.7) brightness(.85)}
+.camera.scanning::after{content:"";position:absolute;inset-inline:0;top:-35%;height:35%;background:linear-gradient(transparent,rgba(43,196,135,.45) 70%,rgba(43,196,135,.9) 71%,transparent 74%);animation:scan 1s linear infinite;pointer-events:none}
+@keyframes scan{to{top:100%}}
+.ai .ms{margin-inline-start:auto;font-size:12px;opacity:.7;direction:ltr;unicode-bidi:isolate}
+.ai .dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex:none}
+.ai.id{background:var(--redact);color:#fff}
+.ai.id .dot{background:var(--amber)}
+.ai b{font-weight:500}
+.ai .fixed{font-size:12.5px;color:var(--green-text);font-weight:500}
+.seg{display:grid;grid-template-columns:repeat(6,1fr);background:#E9EDF4;border-radius:12px;padding:4px;gap:4px}
+.seg button{grid-column:span 2;border:0;background:none;border-radius:9px;padding:9px 4px;font-size:14px;cursor:pointer;font-weight:500;transition:background .2s,box-shadow .2s,transform .12s}
+.seg button.wide{grid-column:span 3}
+.seg button.on{background:var(--card);box-shadow:0 1px 2px rgba(11,26,48,.15);font-weight:500}
+.seg button:active{transform:scale(.97)}
+/* AI label correction: a human gets the last word on what the item is */
+.fix{display:none;margin:-4px 0 14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:10px 12px}
+.fix.on{display:block;animation:rise .28s cubic-bezier(.2,.8,.2,1) both}
+.fix p{margin:0 0 8px;font-size:13.5px;color:var(--muted)}
+.fix p b{color:var(--ink);font-weight:500}
+.fixchips{display:flex;flex-wrap:wrap;gap:8px}
+.fixchips button{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;transition:background .15s,border-color .15s,transform .12s}
+.fixchips button small{color:var(--muted);font-size:12px;direction:ltr;unicode-bidi:isolate}
+.fixchips button.on{background:var(--navy);border-color:var(--navy);color:#fff}.fixchips button.on small{color:#C5CEDB}
+.fixchips button:active{transform:scale(.96)}
+.fixchips select{border:1.5px dashed #AEB6C4;background:transparent;border-radius:999px;padding:6px 10px;font-size:14px;max-width:100%}
+.fixlink{display:none;border:0;background:none;color:var(--muted);font-size:13.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;margin:-6px 0 14px}
+.fixlink.on{display:inline-block}
+.idbox{background:var(--tint);border-radius:var(--r-card);padding:14px;margin-bottom:14px}
+.idbox p{margin:0 0 10px;font-size:14px}
+
+/* item cards */
+.count{font-size:14px;color:var(--muted);margin:0 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.item{background:var(--card);border-radius:var(--r-card);overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.thumb{aspect-ratio:1;width:100%;object-fit:cover;display:block;background:#E9EDF4}
+.item .b{padding:10px 12px 12px}
+.item .t{font-weight:500;font-size:15px}
+.item .m{font-size:12.5px;color:var(--muted)}
+/* the redacted ID card: our signature visual */
+.idthumb{aspect-ratio:1;display:grid;place-items:center;background:#E9EDF4;position:relative}
+.idcard{width:72%;aspect-ratio:1.58;background:#fff;border-radius:9px;box-shadow:0 2px 6px rgba(11,26,48,.12);padding:9% 8%;display:grid;grid-template-columns:30% 1fr;gap:8%}
+.idcard .face{background:#C5CEDB;border-radius:4px}
+.idcard .lines{display:flex;flex-direction:column;justify-content:center;gap:12%}
+.idcard .lines i{display:block;height:9px;border-radius:2px;background:var(--redact)}
+.idcard .lines i:nth-child(2){width:80%}.idcard .lines i:nth-child(3){width:60%}
+.shield{position:absolute;bottom:10px;inset-inline-end:10px;width:34px;height:34px;border-radius:50%;background:var(--navy);display:grid;place-items:center;color:#fff}
+.shield svg{width:18px;height:18px}
+
+.results{margin-top:22px}
+.results h2{font-size:18px;margin:0 0 2px}
+.query{margin:0 0 10px;color:var(--muted);font-size:14.5px}
+.understood{display:inline-flex;gap:6px;align-items:center;background:var(--green-tint);color:var(--green-tint-text);border-radius:999px;padding:3px 11px;font-size:13px;margin:-4px 0 12px}
+.understood bdi{font-weight:500}
+.row{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:10px;margin-bottom:10px;align-items:center}
+.row .thumb,.row .idthumb{width:82px;height:82px;border-radius:12px;flex:none;aspect-ratio:auto}
+.row .idthumb .idcard{width:84%;padding:8% 7%}
+.row .idthumb .idcard .lines i{height:5px}
+.row .idthumb .shield{width:22px;height:22px;bottom:4px;inset-inline-end:4px}.row .idthumb .shield svg{width:12px;height:12px}
+.row .info{flex:1;min-width:0}
+.row.top{border:2px solid var(--green)}
+.badge{display:inline-block;font-size:11.5px;font-weight:500;background:var(--green);color:var(--navy);border-radius:999px;padding:1px 9px;margin-bottom:3px}
+.meter{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.meter .bar{flex:1;height:6px;border-radius:3px;background:#E9EDF4;overflow:hidden;max-width:110px}
+.meter .bar i{display:block;height:100%;background:var(--green);border-radius:3px}
+.row .claim{flex:none}
+.empty{background:var(--card);border:1px dashed #AEB6C4;border-radius:var(--r-card);padding:18px;text-align:center;color:var(--muted);font-size:14.5px}
+.note{border-radius:var(--r-card);padding:12px 14px;font-size:14px;margin-top:12px}
+.note.ok{background:var(--green-tint);color:var(--green-tint-text)}
+.note.warn{background:var(--amber-tint);color:var(--amber-text)}
+.note.bad{background:#FDE7E4;color:var(--danger)}
+
+/* dashboard */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 14px}
+.stat b{display:block;font-size:30px;line-height:1.1;font-weight:500}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.hl{background:var(--navy);color:#fff;border-color:var(--navy)}.stat.hl span{color:#C5CEDB}
+.dash-item{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:10px;margin-bottom:10px}
+.dash-item img{width:76px;height:76px;object-fit:cover;border-radius:12px;flex:none}
+.idpeek{width:76px;height:76px;flex:none;border:0;padding:0;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background:none}
+.idpeek .idthumb{width:100%;height:100%;aspect-ratio:auto}.idpeek .idcard{width:84%;padding:8% 7%}.idpeek .idcard .lines i{height:5px}
+.idpeek .shield{display:none}
+.idpeek span:not(.shield){position:absolute;inset-inline:0;bottom:0;font-size:10.5px;background:rgba(11,26,48,.75);color:#fff;padding:2px 0}
+.idpeek img{width:100%;height:100%;object-fit:cover}
+.dash-item .info{flex:1;min-width:0;font-size:13.5px}
+.dash-item .t{font-weight:500;font-size:15px}
+.status{display:inline-block;font-size:11.5px;border-radius:999px;padding:1px 9px;background:#E9EDF4;margin-inline-start:6px;font-weight:500}
+.status.pending_pickup{background:var(--amber-tint);color:var(--amber-text)}.status.returned{background:var(--green-tint);color:var(--green-tint-text)}.status.locked{background:#FDE7E4;color:var(--danger)}
+.sec{font-size:13px;color:var(--muted)}
+.sec b{color:var(--ink)}
+h3{font-size:16px;margin:22px 0 10px}
+.lost-row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:14px}
+.lost-row small{color:var(--muted)}
+
+/* bottom sheet */
+.scrim{position:fixed;inset:0;background:rgba(11,26,48,.5);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:560px;z-index:50;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:10px 18px calc(22px + var(--safe-b));transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;max-height:88vh;overflow:auto;visibility:hidden}
+.sheet.on{transform:translate(-50%,0);visibility:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+.sheet h2{font-size:21px;margin:0 0 6px}
+.sheet p{color:var(--muted);margin:0 0 14px;font-size:14.5px}
+.success{text-align:center;padding:14px 0 4px}
+.success .big{width:72px;height:72px;border-radius:50%;background:var(--green-tint);color:var(--green-text);display:grid;place-items:center;margin:0 auto 12px}
+.success .big svg{width:36px;height:36px}
+.success .snapmark{width:190px;height:auto;display:block;margin:6px auto 14px;overflow:visible}
+.success .snapmark .dot{transform-box:fill-box;transform-origin:center;animation:snap 1s .25s cubic-bezier(.3,1.4,.4,1) forwards}
+@keyframes snap{0%{transform:translate(0,0) rotate(18deg);fill:#F4A12A}55%{fill:#F4A12A}100%{transform:translate(-8px,18px) rotate(0);fill:#1FA971}}
+.pin{letter-spacing:10px;text-align:center;font-size:24px!important;direction:ltr}
+
+/* toast */
+.toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-140%);z-index:60;width:calc(100% - 24px);max-width:520px;background:var(--deep);color:#fff;border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;transition:transform .3s cubic-bezier(.2,.8,.2,1);font-size:14.5px;box-shadow:0 8px 24px rgba(11,26,48,.3)}
+.toast.on{transform:translate(-50%,0)}
+.toast .bell{width:34px;height:34px;border-radius:50%;background:var(--green-bright);color:var(--deep);display:grid;place-items:center;flex:none}
+.toast .bell svg{width:18px;height:18px}
+
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* ---------- motion
+   One vocabulary, taken from the brand mark: things rise a little and settle into place.
+   It only ever answers something the person did (opened a tab, searched, logged, verified). */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes settle{0%{opacity:0;transform:translateY(-8px) scale(.985)}60%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(31,169,113,.42)}100%{box-shadow:0 0 0 14px rgba(31,169,113,0)}}
+@keyframes pop{40%{transform:scale(1.16)}}
+@keyframes shimmer{to{background-position:-200% 0}}
+.screen.on>*{animation:rise .34s cubic-bezier(.2,.8,.2,1) both}
+.screen.on>:nth-child(2){animation-delay:.05s}.screen.on>:nth-child(3){animation-delay:.1s}
+.screen.on>:nth-child(4){animation-delay:.14s}.screen.on>:nth-child(n+5){animation-delay:.18s}
+.tab.on .pill svg{animation:pop .32s cubic-bezier(.3,1.4,.5,1)}
+.btn,.iconbtn,.photo-btn,.ex,.claim{transition:transform .12s,opacity .2s,background .2s}
+.btn:active,.iconbtn:active,.photo-btn:active,.ex:active{transform:scale(.97)}
+.in{animation:settle .46s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:calc(var(--i,0)*70ms)}
+.row.top.in{animation:settle .46s cubic-bezier(.2,.9,.25,1.1) both,ring 1.1s .55s ease-out}
+.item.in{animation-name:rise;animation-duration:.38s;animation-delay:calc(var(--i,0)*45ms)}
+.meter .bar i{transition:width .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*70ms + .15s)}
+.skel{height:104px;border-radius:var(--r-card);margin-bottom:10px;background:linear-gradient(90deg,#EBEEF4 25%,#F7F9FC 50%,#EBEEF4 75%);background-size:200% 100%;animation:shimmer 1.1s linear infinite}
+.skel.s{height:20px;width:46%;border-radius:6px;margin:22px 0 12px}
+.searching{font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:8px;margin:18px 0 -8px}
+.searching i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pop 1s infinite}
+.note,.understood{animation:rise .3s cubic-bezier(.2,.8,.2,1) both}
+.stat{transition:transform .2s}
+.camera img{animation:rise .3s both}
+.ai.on{animation:rise .28s both}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+[dir=ltr] .brand b{text-align:left}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <img class="mark" src="/static/brand/mark-navy.svg" alt="لقيتها · Laqeetha">
+    <div class="brand"><span data-t="tagline"></span></div>
+    <button class="iconbtn" id="fsBtn" aria-label="Full screen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button class="iconbtn" id="langBtn"></button>
+  </header>
+
+  <main>
+    <!-- Report lost (default screen: what a visitor tries first) -->
+    <section class="screen on" id="s-lost">
+      <h1 data-t="lost_h"></h1>
+      <p class="lede" data-t="lost_sub"></p>
+      <form id="lostForm" autocomplete="off">
+        <div class="field">
+          <textarea name="description" id="desc" data-tp="desc_ph"></textarea>
+          <div class="examples" id="examples"></div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="lostIdToggle"><div><span data-t="lost_id_q"></span><small data-t="lost_id_hint"></small></div></label>
+        <div class="reveal field" id="lostIdField">
+          <label data-t="name_on_card"></label>
+          <input type="text" name="owner_name" data-tp="name_ph">
+        </div>
+        <div class="field">
+          <button type="button" class="photo-btn" data-for="lostPhoto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.2"/><path d="M8 5l1.5-2h5L16 5"/></svg>
+            <span data-t="photo_opt"></span>
+          </button>
+          <input type="file" id="lostPhoto" name="photo" accept="image/*" hidden>
+        </div>
+        <div class="field">
+          <label data-t="contact"></label>
+          <input type="tel" name="contact" placeholder="059…" dir="ltr">
+        </div>
+        <button class="btn" type="submit" data-t="search"></button>
+      </form>
+      <div id="alertBox"></div>
+      <div id="matches"></div>
+    </section>
+
+    <!-- Public feed: the WhatsApp-group replacement -->
+    <section class="screen" id="s-feed">
+      <h1 data-t="feed_h"></h1>
+      <p class="lede" data-t="feed_sub"></p>
+      <p class="count" id="feedCount"></p>
+      <div class="grid" id="feedGrid"></div>
+    </section>
+
+    <!-- Security: log a found item -->
+    <section class="screen" id="s-found">
+      <h1 data-t="found_h"></h1>
+      <p class="lede" data-t="found_sub"></p>
+      <form id="foundForm" autocomplete="off">
+        <button type="button" class="camera" id="camBtn">
+          <span class="cta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.4"/><path d="M8 5l1.5-2h5L16 5"/></svg><span data-t="snap"></span></span>
+          <div class="ai" id="aiTag"><span class="dot"></span><span id="aiText" style="display:flex;gap:8px;align-items:center;flex:1;flex-wrap:wrap"></span></div>
+        </button>
+        <input type="file" id="foundPhoto" name="photo" accept="image/*" capture="environment" hidden>
+        <div class="fix" id="fixBox"></div>
+        <button type="button" class="fixlink" id="fixLink" data-t="fix_ok"></button>
+        <input type="hidden" name="category" id="catVal" value="">
+        <div class="field">
+          <label data-t="where"></label>
+          <div class="seg" id="locSeg">
+            <button type="button" data-v="gate_a" data-t="loc_gate_a"></button>
+            <button type="button" data-v="gate_b" class="on" data-t="loc_gate_b"></button>
+            <button type="button" data-v="gate_c" data-t="loc_gate_c"></button>
+            <button type="button" data-v="abu_romman" class="wide" data-t="loc_abu_romman"></button>
+            <button type="button" data-v="other" class="wide" data-t="loc_other"></button>
+          </div>
+          <input type="hidden" name="location" id="locVal" value="gate_b">
+        </div>
+        <label class="toggle"><input type="checkbox" id="isIdBox"><div><span data-t="is_id"></span><small data-t="is_id_hint"></small></div></label>
+        <input type="hidden" name="is_id" id="idOverride" value="">
+        <div id="secretWrap" class="field">
+          <label data-t="secret"></label>
+          <input type="text" name="secret" id="secretInput" data-tp="secret_ph">
+          <div class="hint" data-t="secret_help"></div>
+        </div>
+        <div class="idbox reveal" id="idFields">
+          <p data-t="id_help"></p>
+          <div class="field"><label data-t="id_name"></label><input type="text" name="owner_name" data-tp="id_name_ph"></div>
+          <div class="field" style="margin:0"><label data-t="id_last4"></label><input type="text" name="secret" id="idSecret" inputmode="numeric" maxlength="4" placeholder="••••" dir="ltr" disabled></div>
+        </div>
+        <button class="btn" type="submit" data-t="log"></button>
+      </form>
+      <div id="foundResult"></div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="screen" id="s-dash">
+      <h1 data-t="dash_h"></h1>
+      <a class="btn secondary" href="/booth" target="_blank" style="margin:6px 0 14px;text-decoration:none"><span data-t="booth_open"></span></a>
+      <div class="stats" id="stats"></div>
+      <h3 data-t="found_items"></h3>
+      <div id="dashFound"></div>
+      <h3 data-t="lost_reports"></h3>
+      <div id="dashLost"></div>
+    </section>
+  </main>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-tab="lost"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg></span><span data-t="tab_lost"></span></button>
+    <button class="tab" data-tab="feed"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></span><span data-t="tab_feed"></span></button>
+    <button class="tab" data-tab="found" data-staff><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.2"/><path d="M9 6l1.3-2h3.4L15 6"/></svg></span><span data-t="tab_found"></span></button>
+    <button class="tab" data-tab="dash" data-staff><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span data-t="tab_dash"></span></button>
+  </nav>
+
+  <div class="scrim" id="scrim"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div>
+  <div class="toast" id="toast" role="status"><span class="bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><span id="toastText"></span></div>
+</div>
+
+<script>
+const T = {
+ ar:{tagline:"مفقودات الجامعة",tab_lost:"ضيّعت شي",tab_feed:"الموجودات",tab_found:"الأمن",tab_dash:"اللوحة",
+  lost_h:"شو ضيّعت؟",lost_sub:"اكتبه بكلامك، بالعامية أو بالإنجليزي. الذكاء الاصطناعي بيدوّر بكل الأغراض اللي سجّلها الأمن.",
+  desc_ph:"مثلاً: جزدان صغير أسود بسحاب",lost_id_q:"ضاعت هوية أو بطاقة جامعية؟",lost_id_hint:"الهويات ما بتنعرض لحدا، بنلاقيها بالاسم",
+  name_on_card:"الاسم المكتوب على البطاقة",name_ph:"الاسم كامل",photo_opt:"عندك صورة قديمة للغرض؟ (اختياري)",
+  contact:"رقمك، لنبعتلك إذا وصل غرضك",search:"دوّر على غرضي",
+  ex:["ساعة سودا وذهبي","مفتاح عليه علامة بنفسجية","جراب ايباد جلد بني","إسوارة ذهبية على شكل مسمار","silver watch with a blue face"],
+  results:"أقرب النتائج",searching:"الذكاء الاصطناعي بيدوّر بكل الأغراض المسجّلة…",understood:"فهمنا:",best:"أقرب نتيجة",strong:"تطابق قوي",possible:"تطابق محتمل",weak:"تطابق ضعيف",this_mine:"هذا إلي",
+  nomatch:"ما لقينا شي لسا. حفظنا بلاغك، وأول ما يسجّل الأمن غرض بيشبهه بنبعتلك تنبيه.",
+  alert:"وصل غرض جديد بيطابق بلاغك",
+  feed_h:"الموجودات",feed_sub:"بدل مجموعات الواتساب: الصور مموّهة، والهويات ما بتنعرض أبداً.",feed_count:n=>`${n} غرض بانتظار أصحابهم`,feed_empty:"ما في أغراض مسجّلة حالياً.",
+  hidden_id:"هوية · مخفية",
+  found_h:"تسجيل غرض",found_sub:"صوّر الغرض. الذكاء الاصطناعي بيعرفه لحاله، وبيكتشف الهويات وبيخفيها.",
+  snap:"صوّر الغرض",where:"وين محفوظ؟",loc_gate_a:"أمن بوابة A",loc_gate_b:"أمن بوابة B",loc_gate_c:"أمن بوابة C",loc_abu_romman:"مبنى أبو رمّان",loc_other:"مكان آخر",
+  fix_unsure:c=>`الذكاء الاصطناعي مش متأكد إنه <b>${c}</b>. اختار الصح:`,fix_ok:"مش هيك؟ صحّحه",fix_pick:"اختار الصح:",fix_more:"غير هيك…",fix_done:"صحّحه الأمن",
+  analyzing:"الذكاء الاصطناعي بيحلل الصورة…",ai_tag:(c,col,p)=>`<b>${c} · ${col}</b> &nbsp;<span style="opacity:.7">${p}%</span>`,
+  ai_id:"<b>هذا مستند هوية.</b> رح ينحفظ بشكل خاص وما بينعرض لحدا.",
+  is_id:"هذا مستند هوية",is_id_hint:"هوية، بطاقة جامعية، رخصة",
+  secret:"تفصيل مخفي",secret_ph:"مثلاً: خدش على الغطاء من ورا",secret_help:"شي ما بيظهر بالصورة المموّهة. صاحب الغرض لازم يوصفه ليستلمه.",
+  id_help:"صورة الهوية ما رح تنعرض لأي طالب. اكتب الاسم ليقدر صاحبها يلاقيها، وآخر 4 أرقام ليثبت إنها إله.",
+  id_name:"الاسم على البطاقة",id_name_ph:"الاسم كامل",id_last4:"آخر 4 أرقام من رقم الهوية",
+  log:"سجّل الغرض",need_photo:"صوّر الغرض أول.",
+  logged:(c,col)=>`انسجل: <b>${c} · ${col}</b>`,alerts_sent:n=>n===1?" · وصل تنبيه لصاحب بلاغ":n>1?` · وصل تنبيه لأصحاب <b>${n}</b> بلاغات`:"",id_saved:"انسجلت الهوية بشكل خاص: ما رح تظهر صورتها لأي حدا.",id_logged:"انسجلت الهوية",
+  dup:"شكله هاد الغرض مسجّل قبل. تأكد إنه مش مكرر.",fill_id:"كمّل الاسم وآخر 4 أرقام، وبعدين سجّل.",
+  claim_h:"إثبات الملكية",claim_p:"اوصف تفصيل صغير ما بيظهر بالصورة.",claim_p_id:"اكتب آخر 4 أرقام من رقم هويتك أو رقمك الجامعي.",
+  claim_ph:"شو التفصيل؟",verify:"تحقّق",ok_h:"لقيتها! تم التحقق",ok_p:l=>`استلم غرضك من <b>${l}</b>، معك بطاقتك الجامعية.`,
+  bad:n=>n>0?`الإجابة ما بتطابق اللي سجّله الأمن. ${n===1?"باقي محاولة وحدة":n===2?"باقي محاولتين":`باقي ${n} محاولات`}.`:"تقفل الغرض. الأمن رح يراجعه يدوياً.",close:"تمام",
+  pin_h:"رمز الموظف",pin_p:"هاي الصفحة للأمن فقط.",pin_go:"دخول",pin_bad:"الرمز غلط.",
+  dash_h:"لوحة الأمن",booth_open:"افتح شاشة العرض المباشر (للابتوب)",s_found:"أغراض مسجّلة",s_lost:"بلاغات فقدان",s_ret:"لقت صاحبها",s_ids:"هويات محمية من النشر",
+  found_items:"الأغراض",lost_reports:"بلاغات الفقدان",st_available:"متاح",st_pending_pickup:"بانتظار الاستلام",st_returned:"رجع",st_locked:"مقفل",
+  secret_col:"التفصيل المخفي",owner_col:"الاسم",claimant:"المطالِب",mark_returned:"تم التسليم",peek:"عرض",unlock:"افتح",no_reports:"ما في بلاغات لسا.",
+  cat:{"keys":"مفاتيح","wallet or purse":"جزدان","phone":"جوال","earbuds case":"علبة سماعات","headphones":"سماعات","laptop":"لابتوب","tablet or tablet case":"جراب آيباد","charger or cable":"شاحن","water bottle":"قنينة مي","backpack":"شنتة ظهر","handbag":"شنتة يد","glasses":"نظارة","watch":"ساعة","bracelet or jewelry":"إسوارة","student ID card":"بطاقة جامعية","national ID card in a plastic holder":"هوية","notebook or book":"دفتر","umbrella":"شمسية","jacket or hoodie":"جاكيت","scarf":"شال","calculator":"آلة حاسبة","USB flash drive":"فلاشة","pencil case":"مقلمة","power bank":"باور بانك"},
+  col:{"black":"أسود","white":"أبيض","gray":"رمادي","silver":"فضي","red":"أحمر","blue":"أزرق","green":"أخضر","yellow":"أصفر","pink":"زهري","purple":"بنفسجي","brown":"بني","orange":"برتقالي","gold":"ذهبي","beige":"بيج","transparent":"شفاف"}},
+ en:{tagline:"Campus Lost & Found",tab_lost:"I lost",tab_feed:"Found items",tab_found:"Security",tab_dash:"Dashboard",
+  lost_h:"What did you lose?",lost_sub:"Describe it in your own words, in Arabic or English. The AI searches everything security has logged.",
+  desc_ph:"e.g. small black zipper purse",lost_id_q:"Lost an ID or student card?",lost_id_hint:"IDs are never shown; we match them by name",
+  name_on_card:"Name printed on the card",name_ph:"Full name",photo_opt:"Have an old photo of it? (optional)",
+  contact:"Your number, so we can alert you",search:"Find my item",
+  ex:["black and gold watch","a key with a purple tag","brown leather iPad cover","gold nail bracelet","ساعة سودا وذهبي"],
+  results:"Closest matches",searching:"The AI is searching every logged item…",understood:"Understood as:",best:"Best match",strong:"Strong match",possible:"Possible match",weak:"Weak match",this_mine:"It's mine",
+  nomatch:"Nothing yet. Your report is saved, and you'll get an alert as soon as security logs something similar.",
+  alert:"A newly logged item matches your report",
+  feed_h:"Found items",feed_sub:"Replaces the WhatsApp groups: photos are blurred, and ID cards are never shown.",feed_count:n=>`${n} items waiting for their owners`,feed_empty:"No items logged right now.",
+  hidden_id:"ID · hidden",
+  found_h:"Log a found item",found_sub:"Take a photo. The AI recognises the item, and detects and hides ID cards.",
+  snap:"Take a photo",where:"Where is it kept?",loc_gate_a:"Gate A",loc_gate_b:"Gate B",loc_gate_c:"Gate C",loc_abu_romman:"Abu Romman Building",loc_other:"Other",
+  fix_unsure:c=>`The AI isn't sure about <b>${c}</b>. Pick the right one:`,fix_ok:"Not right? Correct it",fix_pick:"Pick the right one:",fix_more:"Something else…",fix_done:"corrected by security",
+  analyzing:"The AI is reading the photo…",ai_tag:(c,col,p)=>`<b>${col} ${c}</b> &nbsp;<span style="opacity:.7">${p}%</span>`,
+  ai_id:"<b>This is an ID document.</b> It will be stored privately and never shown.",
+  is_id:"This is an ID document",is_id_hint:"National ID, student card, licence",
+  secret:"Hidden detail",secret_ph:"e.g. scratch on the back cover",secret_help:"Something not visible in the blurred photo. The owner must describe it to claim the item.",
+  id_help:"No student will ever see this ID's photo. Enter the name so the owner can find it, and the last 4 digits so they can prove it's theirs.",
+  id_name:"Name on the card",id_name_ph:"Full name",id_last4:"Last 4 digits of the ID number",
+  log:"Log item",need_photo:"Take a photo first.",
+  logged:(c,col)=>`Logged: <b>${col} ${c}</b>`,alerts_sent:n=>n===1?" · 1 report alerted":n>1?` · <b>${n}</b> reports alerted`:"",id_logged:"ID logged",id_saved:"Logged privately: no one will ever see this ID's photo.",
+  dup:"This looks already logged. Check it isn't a duplicate.",fill_id:"Add the name and last 4 digits, then log it.",
+  claim_h:"Prove it's yours",claim_p:"Describe a small detail that isn't visible in the photo.",claim_p_id:"Enter the last 4 digits of your ID or student number.",
+  claim_ph:"What's the detail?",verify:"Verify",ok_h:"Found it. Verified.",ok_p:l=>`Pick it up at the <b>${l}</b> security room with your student card.`,
+  bad:n=>n>0?`That doesn't match what security recorded. ${n===1?"1 attempt left":`${n} attempts left`}.`:"Item locked. Security will review it manually.",close:"Done",
+  pin_h:"Staff PIN",pin_p:"This screen is for campus security only.",pin_go:"Enter",pin_bad:"Wrong PIN.",
+  dash_h:"Security dashboard",booth_open:"Open the live booth screen (for the laptop)",s_found:"Items logged",s_lost:"Lost reports",s_ret:"Owner found",s_ids:"IDs kept off WhatsApp",
+  found_items:"Items",lost_reports:"Lost reports",st_available:"available",st_pending_pickup:"awaiting pickup",st_returned:"returned",st_locked:"locked",
+  secret_col:"Hidden detail",owner_col:"Name",claimant:"Claimant",mark_returned:"Mark returned",peek:"Show",unlock:"Unlock",no_reports:"No reports yet.",
+  cat:{"wallet or purse":"wallet","earbuds case":"earbuds","tablet or tablet case":"tablet case","charger or cable":"charger","bracelet or jewelry":"bracelet","student ID card":"student card","national ID card in a plastic holder":"ID card","notebook or book":"notebook","jacket or hoodie":"jacket","USB flash drive":"flash drive"},col:{}}
+};
+let lang = sget("lf_lang") || "ar", pin = sget("lf_pin"), reportId = null, poll = null, pendingTab = null;
+function sget(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function sset(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+const $ = s => document.querySelector(s);
+const t = k => T[lang][k] ?? T.en[k] ?? k;
+const cat = c => T[lang].cat[c] || c, col = c => T[lang].col[c] || c;
+const loc = l => ({gate_a:t("loc_gate_a"),gate_b:t("loc_gate_b"),gate_c:t("loc_gate_c"),abu_romman:t("loc_abu_romman"),other:t("loc_other")}[l] || l);
+const CATS = Object.keys(T.ar.cat).filter(c => !/ID card/.test(c));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SHIELD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/></svg>`;
+const SNAP = `<svg class="snapmark" viewBox="150 12 240 130" aria-hidden="true"><path d="M380,22 L380,100 M380,100 L160,100 M160,100 L160,22 M300,100 L300,80 M264,100 L264,80" fill="none" stroke="#13294B" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><rect x="330" y="62" width="32" height="38" rx="12" fill="none" stroke="#13294B" stroke-width="14"/><rect x="198" y="68" width="32" height="64" rx="12" fill="none" stroke="#13294B" stroke-width="14"/><rect x="328" y="32" width="16" height="16" rx="4" fill="#13294B"/><rect x="349" y="32" width="16" height="16" rx="4" fill="#13294B"/><rect x="282" y="120" width="16" height="16" rx="4" fill="#13294B"/><rect x="302" y="120" width="16" height="16" rx="4" fill="#13294B"/><rect x="246" y="50" width="16" height="16" rx="4" fill="#13294B"/><rect class="dot" x="274" y="32" width="16" height="16" rx="4" fill="#F4A12A"/></svg>`;
+const ID_THUMB = `<div class="idthumb"><div class="idcard"><div class="face"></div><div class="lines"><i></i><i></i><i></i></div></div><span class="shield">${SHIELD}</span></div>`;
+const when = s => { const d = new Date(s.replace(" ","T")); return isNaN(d) ? s : d.toLocaleString(lang==="ar"?"ar-PS-u-nu-latn":"en-GB",{weekday:"short",hour:"2-digit",minute:"2-digit"}); };
+
+// ---------- language
+function applyLang(){
+  document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-t]").forEach(e => e.textContent = t(e.dataset.t));
+  document.querySelectorAll("[data-tp]").forEach(e => e.placeholder = t(e.dataset.tp));
+  $("#langBtn").textContent = lang === "ar" ? "EN" : "عربي";
+  $("#examples").innerHTML = t("ex").map(x => `<button type="button" class="ex">${esc(x)}</button>`).join("");
+  const on = document.querySelector(".screen.on").id;
+  if (on === "s-feed") loadFeed(); if (on === "s-dash") loadDash();
+}
+$("#langBtn").onclick = () => { lang = lang === "ar" ? "en" : "ar"; sset("lf_lang", lang); applyLang(); };
+$("#examples").onclick = e => { if (e.target.classList.contains("ex")) { $("#desc").value = e.target.textContent; $("#desc").focus(); } };
+
+// ---------- full screen (for phones opening the demo over the hotspot)
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+if (!standalone && document.documentElement.requestFullscreen && matchMedia("(pointer:coarse)").matches) $("#fsBtn").hidden = false;
+$("#fsBtn").onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(()=>{});
+
+// ---------- api
+async function api(url, opts = {}) {
+  opts.headers = Object.assign({}, opts.headers, pin ? {"x-staff-pin": pin} : {});
+  const r = await fetch(url, opts); const j = await r.json().catch(() => ({}));
+  if (!r.ok) { if (r.status === 401) { pin = null; sset("lf_pin", null); } throw new Error(j.detail || r.statusText); }
+  return j;
+}
+
+// ---------- tabs
+function show(tab){
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === "s-" + tab));
+  scrollTo({top:0});
+  if (tab === "feed") loadFeed(); if (tab === "dash") loadDash();
+}
+$("#tabs").onclick = e => {
+  const b = e.target.closest(".tab"); if (!b) return;
+  if (b.hasAttribute("data-staff") && !pin) { pendingTab = b.dataset.tab; return pinSheet(); }
+  show(b.dataset.tab);
+};
+
+// ---------- sheet + toast
+function openSheet(html){ $("#sheetBody").innerHTML = html; $("#sheet").classList.add("on"); $("#scrim").classList.add("on"); }
+function closeSheet(){ $("#sheet").classList.remove("on"); $("#scrim").classList.remove("on"); }
+$("#scrim").onclick = closeSheet;
+let toastTimer; function toast(msg){ $("#toastText").innerHTML = msg; $("#toast").classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>$("#toast").classList.remove("on"), 4500); }
+
+function pinSheet(){
+  openSheet(`<h2>${t("pin_h")}</h2><p>${t("pin_p")}</p><form id="pinForm"><div class="field"><input class="pin" type="password" inputmode="numeric" maxlength="8" id="pinIn" autocomplete="off"></div><button class="btn">${t("pin_go")}</button><div id="pinMsg"></div></form>`);
+  setTimeout(()=>$("#pinIn").focus(), 250);
+  $("#pinForm").onsubmit = async e => {
+    e.preventDefault(); pin = $("#pinIn").value;
+    try { await api("/api/dashboard"); sset("lf_pin", pin); closeSheet(); show(pendingTab); }
+    catch { $("#pinMsg").innerHTML = `<div class="note bad">${t("pin_bad")}</div>`; }
+  };
+}
+
+// ---------- photo pickers
+document.querySelectorAll(".photo-btn").forEach(btn => {
+  const inp = document.getElementById(btn.dataset.for);
+  btn.onclick = () => inp.click();
+  inp.onchange = () => { if (inp.files[0]) btn.querySelector("svg").outerHTML = `<img src="${URL.createObjectURL(inp.files[0])}" alt="">`; };
+});
+
+// ---------- items
+function strength(s){ return s >= 70 ? t("strong") : s >= 45 ? t("possible") : t("weak"); }
+function thumb(it){ return it.is_id ? ID_THUMB : `<img class="thumb" src="${esc(it.image)}" alt="" loading="lazy">`; }
+function title(it){ return it.is_id ? t("hidden_id") : `${esc(cat(it.category))} · ${esc(col(it.color))}`; }
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const wait = ms => new Promise(r => setTimeout(r, calm ? 0 : ms));
+function fillMeters(root){ requestAnimationFrame(() => requestAnimationFrame(() =>
+  root.querySelectorAll(".meter i[data-w]").forEach(i => { i.style.width = i.dataset.w; i.removeAttribute("data-w"); }))); }
+function countUp(el, to){
+  if (calm || !to) { el.textContent = to; return; }
+  const t0 = performance.now(), d = 650;
+  const step = now => { const p = Math.min(1, (now - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function resultRow(it, i){
+  return `<div class="row in ${i===0?"top":""}" style="--i:${i}">${thumb(it)}
+    <div class="info">${i===0?`<span class="badge">${t("best")}</span>`:""}
+      <div class="t" style="font-weight:500">${title(it)}</div>
+      <div class="m" style="font-size:12.5px;color:var(--muted)">${esc(loc(it.location))} · ${esc(when(it.found_at))}</div>
+      <div class="meter"><span class="bar"><i style="width:0;--i:${i}" data-w="${Math.max(8,it.score)}%"></i></span>${strength(it.score)}</div>
+    </div>
+    <button class="btn small claim" data-claim="${it.id}" data-id="${it.is_id?1:0}">${t("this_mine")}</button></div>`;
+}
+
+$("#lostIdToggle").onchange = e => $("#lostIdField").classList.toggle("on", e.target.checked);
+$("#lostForm").onsubmit = async e => {
+  e.preventDefault(); const btn = e.target.querySelector(".btn"); const label = btn.textContent;
+  btn.disabled = true; btn.innerHTML = `<span class="spin"></span>`;
+  $("#matches").innerHTML = `<div class="searching"><i></i>${t("searching")}</div><div class="skel s"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>`;
+  $("#matches").scrollIntoView({behavior:calm ? "auto" : "smooth", block:"start"});
+  try {
+    const [j] = await Promise.all([api("/api/lost", {method:"POST", body:new FormData(e.target)}), wait(650)]);
+    reportId = j.report_id; startPolling(j.matches.map(m => m.id));
+    const q = e.target.description.value.trim() || e.target.owner_name.value.trim();
+    $("#matches").innerHTML = `<div class="results">${j.matches.length
+      ? `<h2>${t("results")}</h2>${q ? `<p class="query">«<bdi>${esc(q)}</bdi>»</p>` : ""}${j.understood ? `<div class="understood">${t("understood")} <bdi dir="ltr">${esc(j.understood)}</bdi></div>` : ""}${j.matches.map(resultRow).join("")}`
+      : `${j.understood ? `<div class="understood">${t("understood")} <bdi dir="ltr">${esc(j.understood)}</bdi></div>` : ""}<div class="empty in">${t("nomatch")}</div>`}</div>`;
+    fillMeters($("#matches"));
+  } catch (err) { $("#matches").innerHTML = ""; toast(esc(err.message)); }
+  btn.disabled = false; btn.textContent = label;
+};
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-claim]"); if (!b) return;
+  claimSheet(b.dataset.claim, b.dataset.id === "1");
+});
+
+function startPolling(seenIds){
+  clearInterval(poll); const seen = new Set(seenIds);
+  poll = setInterval(async () => {
+    const list = await api(`/api/lost/${reportId}/alerts`).catch(() => []);
+    const fresh = list.filter(x => !seen.has(x.id)); fresh.forEach(x => seen.add(x.id));
+    if (fresh.length) {
+      toast(t("alert")); try { navigator.vibrate && navigator.vibrate([180, 90, 180]); } catch (e) {}
+      $("#matches").querySelector(".empty")?.remove();
+      $("#alertBox").innerHTML = `<div class="results"><h2>${t("alert")}</h2>${list.map(resultRow).join("")}</div>`; fillMeters($("#alertBox"));
+    }
+  }, 3000);
+}
+
+function claimSheet(id, isId){
+  openSheet(`<h2>${t("claim_h")}</h2><p>${t(isId ? "claim_p_id" : "claim_p")}</p>
+    <form id="claimForm"><div class="field"><input type="text" id="claimIn" ${isId?'inputmode="numeric" maxlength="4" dir="ltr" class="pin" placeholder="••••"':`placeholder="${t("claim_ph")}"`}></div>
+    <button class="btn">${t("verify")}</button><div id="claimMsg"></div></form>`);
+  setTimeout(()=>$("#claimIn").focus(), 250);
+  $("#claimForm").onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(); fd.append("answer", $("#claimIn").value); fd.append("contact", $("#lostForm [name=contact]").value);
+    try {
+      const j = await api(`/api/claim/${id}`, {method:"POST", body:fd});
+      if (j.verified) {
+        try { navigator.vibrate && navigator.vibrate([90, 60, 220]); } catch (e) {}
+        openSheet(`<div class="success">${SNAP}
+          <h2>${t("ok_h")}</h2><p>${t("ok_p")(esc(loc(j.location)))}</p></div><button class="btn" onclick="closeSheet()">${t("close")}</button>`);
+        document.querySelectorAll(`[data-claim="${id}"]`).forEach(b => { const r = b.closest(".row"); r.style.transition = "opacity .3s, transform .3s"; r.style.opacity = 0; r.style.transform = "scale(.97)"; setTimeout(() => r.remove(), calm ? 0 : 300); });
+      } else $("#claimMsg").innerHTML = `<div class="note bad">${t("bad")(j.attempts_left)}</div>`;
+    } catch (err) { $("#claimMsg").innerHTML = `<div class="note bad">${esc(err.message)}</div>`; }
+  };
+}
+
+// ---------- feed
+async function loadFeed(){
+  const items = await api("/api/feed").catch(() => []);
+  $("#feedCount").textContent = items.length ? t("feed_count")(items.length) : "";
+  $("#feedGrid").innerHTML = items.length ? items.map((it, i) => `<div class="item in" style="--i:${Math.min(i,10)}">${thumb(it)}<div class="b"><div class="t">${title(it)}</div><div class="m">${esc(loc(it.location))}</div><div class="m">${esc(when(it.found_at))}</div></div></div>`).join("")
+    : `<div class="empty" style="grid-column:1/-1">${t("feed_empty")}</div>`;
+}
+
+// ---------- security: log a found item
+const foundPhoto = $("#foundPhoto");
+$("#camBtn").onclick = () => foundPhoto.click();
+document.querySelectorAll("#locSeg button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#locSeg button").forEach(x => x.classList.toggle("on", x === b)); $("#locVal").value = b.dataset.v; });
+function setIdMode(on, byOfficer){
+  $("#isIdBox").checked = on;
+  if (byOfficer) $("#idOverride").value = on ? "1" : "no";
+  $("#idFields").classList.toggle("on", on); $("#secretWrap").style.display = on ? "none" : "";
+  $("#secretInput").disabled = on; $("#idSecret").disabled = !on;
+}
+$("#isIdBox").onchange = e => { setIdMode(e.target.checked, true); if (e.target.checked) hideFix(); else if (lastTag) renderFix(lastTag); };
+// ---- AI label correction (security taps the right label when the AI is unsure)
+let lastTag = null, lastMs = "";
+function aiLine(){
+  const tag = lastTag, c = $("#catVal").value || tag.category, fixed = !!$("#catVal").value;
+  return t("ai_tag")(esc(cat(c)), esc(col(tag.color)), Math.round(tag.category_conf*100)).replace(/&nbsp;<span style="opacity:.7">\d+%<\/span>/, fixed ? ` &nbsp;<span class="fixed">✓ ${t("fix_done")}</span>` : "$&") + lastMs;
+}
+function renderFix(tag, open){
+  const box = $("#fixBox"), chosen = $("#catVal").value || tag.category;
+  const opts = [{label:tag.category, p:tag.category_conf}, ...(tag.alternatives || [])].filter(o => CATS.includes(o.label)).slice(0, 4);
+  const unsure = tag.category_conf < 0.6 && !$("#catVal").value;
+  box.innerHTML = `<p>${unsure ? t("fix_unsure")(esc(cat(tag.category))) : t("fix_pick")}</p><div class="fixchips">`
+    + opts.map(o => `<button type="button" data-cat="${esc(o.label)}" class="${o.label === chosen ? "on" : ""}">${esc(cat(o.label))}<small>${Math.round(o.p*100)}%</small></button>`).join("")
+    + `<select id="fixMore" aria-label="${t("fix_more")}"><option value="">${t("fix_more")}</option>${CATS.filter(c => !opts.some(o => o.label === c)).map(c => `<option value="${esc(c)}" ${c === chosen ? "selected" : ""}>${esc(cat(c))}</option>`).join("")}</select></div>`;
+  const show = !!(tag.category_conf < 0.6 || open);   // toggle(x, undefined) would flip, not set
+  box.classList.toggle("on", show); $("#fixLink").classList.toggle("on", !show);
+}
+function hideFix(){ $("#fixBox").classList.remove("on"); $("#fixLink").classList.remove("on"); }
+function pickCat(c){
+  $("#catVal").value = c && c !== lastTag.category ? c : "";
+  $("#aiText").innerHTML = aiLine(); renderFix(lastTag, true);
+}
+$("#fixBox").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (b) pickCat(b.dataset.cat); });
+$("#fixBox").addEventListener("change", e => { if (e.target.id === "fixMore" && e.target.value) pickCat(e.target.value); });
+$("#fixLink").onclick = () => renderFix(lastTag, true);
+foundPhoto.onchange = async () => {
+  const f = foundPhoto.files[0]; if (!f) return;
+  const cam = $("#camBtn"); cam.querySelector(".cta").style.display = "none";
+  cam.querySelector("img")?.remove(); cam.insertAdjacentHTML("afterbegin", `<img src="${URL.createObjectURL(f)}" alt="">`);
+  const ai = $("#aiTag"); ai.className = "ai on"; $("#aiText").innerHTML = t("analyzing");
+  $("#foundResult").innerHTML = ""; $("#idOverride").value = ""; $("#catVal").value = ""; hideFix(); cam.classList.add("scanning");
+  const fd = new FormData(); fd.append("photo", f);
+  try {
+    // keep the scan visible for a moment so people can see the AI working (the real read takes 0.08–0.23 s)
+    const [tag] = await Promise.all([api("/api/analyze", {method:"POST", body:fd}), new Promise(r => setTimeout(r, 900))]);
+    const ms = tag.ms != null ? `<span class="ms">${tag.ms} ms</span>` : "";
+    lastTag = tag; lastMs = ms;
+    if (tag.is_id) { ai.classList.add("id"); $("#aiText").innerHTML = t("ai_id") + ms; setIdMode(true); }
+    else { $("#aiText").innerHTML = aiLine(); setIdMode(false); renderFix(tag); }
+  } catch (err) { $("#aiText").textContent = err.message; }
+  cam.classList.remove("scanning");
+};
+$("#foundForm").onsubmit = async e => {
+  e.preventDefault(); const f = e.target, out = $("#foundResult"), btn = f.querySelector(".btn"), label = btn.textContent;
+  if (!foundPhoto.files[0]) { out.innerHTML = `<div class="note warn">${t("need_photo")}</div>`; return; }
+  // What the officer sees is what gets stored: if the screen is in ID mode (the AI said so, or the officer
+  // ticked it), the server must treat it as an ID. Privacy never rests on two separate checks agreeing.
+  if ($("#isIdBox").checked) $("#idOverride").value = "1";
+  btn.disabled = true; btn.innerHTML = `<span class="spin"></span>`;
+  try {
+    const j = await api("/api/found", {method:"POST", body:new FormData(f)});
+    if (j.needs_id_details) { setIdMode(true); out.innerHTML = `<div class="note warn">${t("fill_id")}</div>`; }
+    else {
+      out.innerHTML = `<div class="note ok">${j.is_id ? `<b>${t("id_logged")}</b>` : t("logged")(esc(cat(j.tags.category)), esc(col(j.tags.color)))}${t("alerts_sent")(j.alerts_sent)}${j.is_id?`<br>${t("id_saved")}`:""}</div>`
+        + (j.possible_duplicate_of ? `<div class="note warn">${t("dup")}</div>` : "");
+      f.reset(); foundPhoto.value = ""; setIdMode(false); $("#idOverride").value = "";
+      const cam = $("#camBtn"); cam.querySelector("img")?.remove(); cam.querySelector(".cta").style.display = ""; $("#aiTag").className = "ai";
+      document.querySelectorAll("#locSeg button").forEach(x => x.classList.toggle("on", x.dataset.v === "gate_b")); $("#locVal").value = "gate_b";
+      $("#catVal").value = ""; lastTag = null; hideFix();
+    }
+  } catch (err) { out.innerHTML = `<div class="note bad">${esc(err.message)}</div>`; }
+  btn.disabled = false; btn.textContent = label;
+};
+
+// ---------- dashboard
+document.addEventListener("click", e => {   // staff tap to reveal an ID photo; tap again to hide
+  const b = e.target.closest(".idpeek"); if (!b) return;
+  if (b.dataset.open) { b.innerHTML = `${ID_THUMB}<span>${t("peek")}</span>`; delete b.dataset.open; }
+  else { b.innerHTML = `<img src="${b.dataset.src}" alt="">`; b.dataset.open = "1"; setTimeout(() => b.dataset.open && b.click(), 8000); }
+});
+async function setStatus(id, s){ const fd = new FormData(); fd.append("status", s); await api(`/api/found/${id}/status`, {method:"POST", body:fd}); loadDash(); }
+async function loadDash(){
+  let j; try { j = await api("/api/dashboard"); } catch { return; }
+  const S = j.stats;
+  $("#stats").innerHTML = [["s_found",S.found],["s_lost",S.lost],["s_ret",S.returned],["s_ids",S.ids_protected,"hl"]]
+    .map(([k,v,c]) => `<div class="stat ${c||""}"><b data-v="${v}">0</b><span>${t(k)}</span></div>`).join("");
+  $("#stats").querySelectorAll("b[data-v]").forEach(b => countUp(b, +b.dataset.v));
+  $("#dashFound").innerHTML = j.found.map(f => `<div class="dash-item">${f.is_id
+      ? `<button type="button" class="idpeek" data-src="${esc(f.image)}&pin=${encodeURIComponent(pin)}" title="${t("peek")}">${ID_THUMB}<span>${t("peek")}</span></button>`
+      : `<img src="${esc(f.image)}&pin=${encodeURIComponent(pin)}" alt="">`}
+    <div class="info"><div class="t">${f.is_id ? (lang==="ar"?"مستند هوية":"ID document") : `${esc(cat(f.category))} · ${esc(col(f.color))}`}<span class="status ${f.status}">${t("st_"+f.status)}</span></div>
+    <div class="sec">${esc(loc(f.location))} · ${esc(when(f.found_at))}</div>
+    ${f.owner_name ? `<div class="sec">${t("owner_col")}: <b><bdi>${esc(f.owner_name)}</bdi></b></div>` : ""}
+    <div class="sec">${t("secret_col")}: <b><bdi>${esc(f.secret)}</bdi></b></div>
+    ${f.claimant ? `<div class="sec">${t("claimant")}: <bdi>${esc(f.claimant)}</bdi></div>` : ""}
+    ${f.status==="pending_pickup" ? `<button class="btn small" style="margin-top:6px" onclick="setStatus('${f.id}','returned')">${t("mark_returned")}</button>` : ""}
+    ${f.status==="locked" ? `<button class="btn small secondary" style="margin-top:6px" onclick="setStatus('${f.id}','available')">${t("unlock")}</button>` : ""}
+    </div></div>`).join("");
+  $("#dashLost").innerHTML = j.lost.length ? j.lost.map(l => `<div class="lost-row"><bdi>${esc(l.description || l.owner_name || "—")}</bdi><br><small>${esc(when(l.created))}${l.contact ? " · " + esc(l.contact) : ""}</small></div>`).join("")
+    : `<div class="empty">${t("no_reports")}</div>`;
+}
+
+applyLang();
+</script>
+</body>
+</html>
